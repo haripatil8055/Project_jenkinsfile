@@ -1,0 +1,45 @@
+pipeline{
+    agent any
+    
+    tools{
+        maven 'mymaven'
+    }
+    
+    stages{
+        stage('Clone Repo')
+        {
+           steps{
+               git 'https://github.com/haripatil8055/banking-finance-Project1.git'
+            }
+        }
+        stage('Test Code')
+        {
+           steps{
+               sh 'mvn package'
+               
+           }
+        }
+        
+        stage('Build Code')
+        {
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage('Build Image')
+        {
+            steps{
+                sh 'docker build -t myproject1:$BUILD_NUMBER .'
+            }
+        }
+        
+        stage('deploy the Image')
+        {
+            steps{
+                sh 'docker run -d -P myproject1:$BUILD_NUMBER '
+                
+            }
+        }
+    }
+    
+}
